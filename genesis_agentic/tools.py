@@ -51,7 +51,7 @@ LI_packages = {
 
 class GenesisTool:
     """
-    A wrapper of FunctionTOol class for Genesis tools, adding the tool_type attribute.
+    A wrapper of FunctionTool class for Genesis tools, adding the tool_type attribute.
     """
 
     def __init__(self, function_tool: FunctionTool, tool_type: ToolType) -> None:
@@ -269,7 +269,7 @@ class ToolsFactory:
             tool_type (ToolType): the type of tool.
 
         Returns:
-            list[FunctionTool]: a list of FunctionTool objects.
+            List[FunctionTool]: A list of FunctionTool objects.
         """
         return GenesisTool(FunctionTool.from_defaults(function), tool_type)
 
@@ -290,7 +290,7 @@ class ToolsFactory:
             kwargs (dict): The keyword arguments to pass to the tool constructor (see Hub for tool specific details).
 
         Returns:
-            list[FunctionTool]: a list of FunctionTool objects.
+            list[FunctionTool]: A list of FunctionTool objects.
         """
         # Dynamically install and import the module
         if tool_package_name not in LI_packages.keys():
