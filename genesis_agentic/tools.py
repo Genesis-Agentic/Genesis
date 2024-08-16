@@ -98,6 +98,13 @@ class GenesisToolFactory:
         genesis_corpus_id: str,
         genesis_api_key: str,
     ) -> None:
+        """
+        Initialize the GenesisToolFactory
+        Args:
+            genesis_customer_id (str): The Genesis customer ID.
+            genesis_corpus_id (str): The Genesis corpus ID.
+            genesis_api_key (str): The Genesis API key.
+        """
         self.genesis_customer_id = genesis_customer_id
         self.genesis_corpus_id = genesis_corpus_id
         self.genesis_api_key = genesis_api_key
@@ -250,7 +257,6 @@ class GenesisToolFactory:
         tool = FunctionTool.from_defaults(
             fn=rag_function,
             name=tool_name,
-#            description=tool_description,
             fn_schema=tool_args_schema,
         )
         return GenesisTool(tool, ToolType.QUERY)
