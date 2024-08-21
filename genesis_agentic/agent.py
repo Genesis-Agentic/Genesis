@@ -36,6 +36,7 @@ def _get_prompt(prompt_template: str, topic: str, custom_instructions: str):
 
         prompt_template (str): The template for the prompt.
         topic (str): The topic to be included in the prompt.
+        custom_instructions(str): The custom instructions to be included in the prompt.
 
     Returns:
         str: The formatted prompt.
@@ -51,7 +52,7 @@ def _retry_if_exception(exception):
     # Define the condition to retry on certain exceptions
     return isinstance(
         exception, (TimeoutError)
-    )  # Replace SomeOtherException with other exceptions you want to catch
+    )
 
 
 class Agent:
@@ -66,7 +67,7 @@ class Agent:
         custom_instructions: str = "",
         verbose: bool = True,
         update_func: Optional[Callable[[AgentStatusType, str], None]] = None,
-    ):
+    ) -> None:
         """
         Initialize the agent with the specified type, tools, topic, and system message.
 
@@ -74,8 +75,9 @@ class Agent:
 
             tools (list[FunctionTool]): A list of tools to be used by the agent.
             topic (str, optional): The topic for the agent. Defaults to 'general'.
-            custom_instructions (str, optional): custom instructions for the agent. Defaults to ''.
-            update_func (Callable): a callback function the code calls on any agent updates.
+            custom_instructions (str, optional): Custom instructions for the agent. Defaults to ''.
+            verbose (bool, optional): Whether the agent should print its steps. Defaults to True.
+            update_func (Callable): A callback function the code calls on any agent updates.
         """
         self.agent_type = AgentType(os.getenv("VECTARA_AGENTIC_AGENT_TYPE", "OPENAI"))
         self.tools = tools
@@ -84,10 +86,10 @@ class Agent:
         self._topic = topic
 
         main_tok = get_tokenizer_for_model(role=LLMRole.MAIN)
-        self.main_token_counter = TokenCountingHandler(tokenizer = main_tok) if main_tok else None
+        self.main_token_counter = TokenCountingHandler(tokenizer=main_tok) if main_tok else None
         tool_tok = get_tokenizer_for_model(role=LLMRole.TOOL)
-        self.tool_token_counter = TokenCountingHandler(tokenizer = tool_tok) if tool_tok else None
-        
+        self.tool_token_counter = TokenCountingHandler(tokenizer=tool_tok) if tool_tok else None
+
         callbacks = [AgentCallbackHandler(update_func)]
         if self.main_token_counter:
             callbacks.append(self.main_token_counter)
@@ -139,13 +141,14 @@ class Agent:
             tools (list[FunctionTool]): A list of tools to be used by the agent.
             topic (str, optional): The topic for the agent. Defaults to 'general'.
             custom_instructions (str, optional): custom instructions for the agent. Defaults to ''.
-            llm (LLM): The language model to be used by the agent.
+            verbose (bool, optional): Whether the agent should print its steps. Defaults to True.
+            update_func (Callable): A callback function the code calls on any agent updates.
+            
 
         Returns:
             Agent: An instance of the Agent class.
         """
         return cls(tools, topic, custom_instructions, verbose, update_func)
-
 
     @classmethod
     def from_corpus(
@@ -176,22 +179,22 @@ class Agent:
             genesis_api_key (str): The Genesis API key.
             data_description (str): The description of the data.
             assistant_specialty (str): The specialty of the assistant.
-            verbose (bool): Whether to print verbose output.
-            genesis_filter_fields (List[dict]): The filterable attributes (each dict includes name, type, and description).
-            genesis_lambda_val (float): The lambda value for Genesis hybrid search.
-            genesis_reranker (str): The Genesis reranker name (default "mmr")
-            genesis_rerank_k (int): The number of results to use with reranking.
-            genesis_n_sentences_before (int): The number of sentences before the matching text
-            genesis_n_sentences_after (int): The number of sentences after the matching text.
-            genesis_summary_num_results (int): The number of results to use in summarization.
-            genesis_summarizer (str): The Genesis summarizer name.
+            verbose (bool, optional): Whether to print verbose output.
+            genesis_filter_fields (List[dict], optional): The filterable attributes (each dict includes name, type, and description).
+            genesis_lambda_val (float, optional): The lambda value for Genesis hybrid search.
+            genesis_reranker (str, optional): The Genesis reranker name (default "mmr")
+            genesis_rerank_k (int, optional): The number of results to use with reranking.
+            genesis_n_sentences_before (int, optional): The number of sentences before the matching text
+            genesis_n_sentences_after (int, optional): The number of sentences after the matching text.
+            genesis_summary_num_results (int, optional): The number of results to use in summarization.
+            genesis_summarizer (str, optional): The Genesis summarizer name.
 
         Returns:
             Agent: An instance of the Agent class.
         """
-        vec_factory = GenesisToolFactory(genesis_api_key=genesis_api_key, 
+        vec_factory = GenesisToolFactory(genesis_api_key=genesis_api_key,
                                          genesis_customer_id=genesis_customer_id,
-                                         genesis_corpus_id=genesis_corpus_id)        
+                                         genesis_corpus_id=genesis_corpus_id)
         QueryArgs = create_model(
             "QueryArgs",
             query=(str, Field(description="The user query")),
@@ -208,9 +211,9 @@ class Agent:
             returns a response (str) to a user question about {data_description}.
             """,
             tool_args_schema = QueryArgs,
-            reranker = genesis_reranker, rerank_k = genesis_rerank_k, 
-            n_sentences_before = genesis_n_sentences_before, 
-            n_sentences_after = genesis_n_sentences_after, 
+            reranker = genesis_reranker, rerank_k = genesis_rerank_k,
+            n_sentences_before = genesis_n_sentences_before,
+            n_sentences_after = genesis_n_sentences_after,
             lambda_val = genesis_lambda_val,
             summary_num_results = genesis_summary_num_results,
             genesis_summarizer = genesis_summarizer,
@@ -224,9 +227,9 @@ class Agent:
         """
 
         return cls(
-            tools=[genesis_tool], 
-            topic=assistant_specialty, 
-            custom_instructions=assistant_instructions, 
+            tools=[genesis_tool],
+            topic=assistant_specialty,
+            custom_instructions=assistant_instructions,
             verbose=verbose,
             update_func=None
         )
