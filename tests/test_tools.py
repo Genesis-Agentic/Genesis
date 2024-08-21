@@ -1,12 +1,12 @@
 import unittest
 
-from genesis_agentic.tools import GenesisToolFactory, ToolsFactory
+from genesis_agentic.tools import GenesisTool, GenesisToolFactory, ToolsFactory, ToolType
 from pydantic import Field, BaseModel
-from llama_index.core.tools import FunctionTool
+from llama_index.core.tools.types import BaseTool
 
 
 class TestToolsPackage(unittest.TestCase):
-    def test_tools_factory_init(self):
+    def test_genesis_tool_factory(self):
         genesis_customer_id = "4584783"
         genesis_corpus_id = "4"
         genesis_api_key = "api_key"
@@ -18,19 +18,8 @@ class TestToolsPackage(unittest.TestCase):
         self.assertEqual(genesis_corpus_id, vec_factory.genesis_corpus_id)
         self.assertEqual(genesis_api_key, vec_factory.genesis_api_key)
 
-    def test_get_tools(self):
-        def mult(x, y):
-            return x * y
-
         class QueryToolArgs(BaseModel):
             query: str = Field(description="The user query")
-
-        genesis_customer_id = "4584783"
-        genesis_corpus_id = "4"
-        genesis_api_key = "api_key"
-        vec_factory = GenesisToolFactory(
-            genesis_customer_id, genesis_corpus_id, genesis_api_key
-        )
 
         query_tool = vec_factory.create_rag_tool(
             tool_name="rag_tool",
@@ -40,12 +29,33 @@ class TestToolsPackage(unittest.TestCase):
             tool_args_schema=QueryToolArgs,
         )
 
+        self.assertIsInstance(query_tool, GenesisTool)
+        self.assertIsInstance(query_tool, BaseTool)
+        self.assertEqual(query_tool.tool_type, ToolType.QUERY)
+
+    def test_tool_factory(self):
+        def mult(x, y):
+            return x * y
+
         tools_factory = ToolsFactory()
-        other_tools = tools_factory.get_tools([mult])
-        self.assertTrue(len(other_tools) == 1)
-        self.assertIsInstance(other_tools[0], FunctionTool)
-        self.assertIsInstance(query_tool, FunctionTool)
-        # ... ANY OTHER TESTS WE WANT TO ENSURE THIS FUNCTIONALITY IS CORRECT
+        other_tool = tools_factory.create_tool(mult)
+        self.assertIsInstance(other_tool, GenesisTool)
+        self.assertIsInstance(other_tool, BaseTool)
+        self.assertEqual(other_tool.tool_type, ToolType.QUERY)
+
+    def test_llama_index_tools(self):
+        tools_factory = ToolsFactory()
+
+        llama_tools = tools_factory.get_llama_index_tools(
+            tool_package_name="arxiv",
+            tool_spec_name="ArxivToolSpec"
+        )
+
+        arxiv_tool = llama_tools[0]
+
+        self.assertIsInstance(arxiv_tool, GenesisTool)
+        self.assertIsInstance(arxiv_tool, BaseTool)
+        self.assertEqual(arxiv_tool.tool_type, ToolType.QUERY)
 
 
 if __name__ == "__main__":
