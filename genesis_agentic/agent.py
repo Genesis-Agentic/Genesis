@@ -150,6 +150,7 @@ class Agent:
     @classmethod
     def from_corpus(
         cls,
+        tool_name: str,
         genesis_customer_id: str,
         genesis_corpus_id: str,
         genesis_api_key: str,
@@ -169,7 +170,7 @@ class Agent:
         Create an agent from a single Genesis corpus
 
         Args:
-            name (str): The name .
+            tool_name (str): The name of Genesis tool used by the agent
             genesis_customer_id (str): The Genesis customer ID.
             genesis_corpus_id (str): The Genesis corpus ID.
             genesis_api_key (str): The Genesis API key.
@@ -201,7 +202,7 @@ class Agent:
         )
 
         genesis_tool = vec_factory.create_rag_tool(
-            tool_name = f"genesis_{genesis_corpus_id}",
+            tool_name = tool_name or f"genesis_{genesis_corpus_id}",
             tool_description = f"""
             Given a user query,
             returns a response (str) to a user question about {data_description}.
