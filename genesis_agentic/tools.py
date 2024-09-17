@@ -154,6 +154,7 @@ class GenesisToolFactory:
             genesis_api_key=self.genesis_api_key,
             genesis_customer_id=self.genesis_customer_id,
             genesis_corpus_id=self.genesis_corpus_id,
+            x_source_str="genesis-agentic"
         )
 
         def _build_filter_string(kwargs):
