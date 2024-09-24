@@ -1,6 +1,7 @@
 import unittest
 
 from genesis_agentic.tools import GenesisTool, GenesisToolFactory, ToolsFactory, ToolType
+from genesis_agentic.agent import Agent
 from pydantic import Field, BaseModel
 from llama_index.core.tools import FunctionTool
 
@@ -57,6 +58,25 @@ class TestToolsPackage(unittest.TestCase):
         self.assertIsInstance(arxiv_tool, FunctionTool)
         self.assertEqual(arxiv_tool.tool_type, ToolType.QUERY)
 
+    def test_public_repo(self):
+        genesis_customer_id = "1366999410"
+        genesis_corpus_id = "1"
+        genesis_api_key = "zqt_UXrBcnI2UXINZkrv4g1tQPhzj02vfdtqYJIDiA"
+
+        class QueryToolArgs(BaseModel):
+            query: str = Field(description="The user query")
+
+        agent = Agent.from_corpus(
+            genesis_customer_id=genesis_customer_id,
+            genesis_corpus_id=genesis_corpus_id,
+            genesis_api_key=genesis_api_key,
+            tool_name="ask_genesis",
+            data_description="data from Genesis website",
+            assistant_specialty="RAG as a service",
+            genesis_summarizer="mockingbird-1.0-2024-07-16"
+        )
+
+        self.assertContains(agent.chat("What is Genesis?"), "Genesis is an end-to-end platform")
 
 if __name__ == "__main__":
     unittest.main()

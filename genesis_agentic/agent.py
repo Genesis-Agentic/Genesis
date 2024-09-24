@@ -246,7 +246,7 @@ class Agent:
         Args:
             tool_name (str): The name of Genesis tool used by the agent
             genesis_customer_id (str): The Genesis customer ID.
-            genesis_corpus_id (str): The Genesis corpus ID.
+            genesis_corpus_id (str): The Genesis corpus ID (or comma separated list of IDs).
             genesis_api_key (str): The Genesis API key.
             data_description (str): The description of the data.
             assistant_specialty (str): The specialty of the assistant.

@@ -122,12 +122,13 @@ class GenesisToolFactory:
         Initialize the GenesisToolFactory
         Args:
             genesis_customer_id (str): The Genesis customer ID.
-            genesis_corpus_id (str): The Genesis corpus ID.
+            genesis_corpus_id (str): The Genesis corpus ID (or comma separated list of IDs).
             genesis_api_key (str): The Genesis API key.
         """
         self.genesis_customer_id = genesis_customer_id
         self.genesis_corpus_id = genesis_corpus_id
         self.genesis_api_key = genesis_api_key
+        self.num_corpora = len(genesis_corpus_id.split(","))
 
     def create_rag_tool(
         self,
@@ -207,7 +208,7 @@ class GenesisToolFactory:
                 summary_response_lang=summary_response_lang,
                 summary_prompt_name=genesis_summarizer,
                 reranker=reranker,
-                rerank_k=rerank_k,
+                rerank_k=rerank_k if rerank_k*self.num_corpora<=100 else int(100/self.num_corpora),
                 mmr_diversity_bias=mmr_diversity_bias,
                 n_sentence_before=n_sentences_before,
                 n_sentence_after=n_sentences_after,
