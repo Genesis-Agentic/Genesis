@@ -56,6 +56,20 @@ class TestAgentPackage(unittest.TestCase):
         self.assertIsInstance(agent, Agent)
         self.assertEqual(agent._topic, "question answering")
 
+    def test_serialization(self):
+        agent = Agent.from_corpus(
+            tool_name="RAG Tool",
+            genesis_customer_id="4584783",
+            genesis_corpus_id="4",
+            genesis_api_key="api_key",
+            data_description="information",
+            assistant_specialty="question answering",
+        )
+
+        agent_reloaded = agent.loads(agent.dumps())
+        self.assertIsInstance(agent_reloaded, Agent)
+        self.assertEqual(agent, agent_reloaded)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,4 +1,4 @@
-# Contributing to genesis-agemt
+# Contributing to genesis-agent
 
 Thank you for your interest in `genesis-agentic` and considering contributing to our project! 
 Whether it's a bug, a new feature updates to the documentation or anything else - we truly appreciate your time and effort.
