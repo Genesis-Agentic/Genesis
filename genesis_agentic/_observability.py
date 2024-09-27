@@ -16,7 +16,7 @@ def setup_observer():
         phoenix_endpoint = os.getenv("PHOENIX_ENDPOINT", None)
         if not phoenix_endpoint:
             px.launch_app()
-            tracer_provider = register(endpoint='http://localhost:6006', project_name="genesis-agentic")
+            tracer_provider = register(endpoint='http://localhost:6006/v1/traces', project_name="genesis-agentic")
         elif 'app.phoenix.arize.com' in phoenix_endpoint:   # hosted on Arizze
             phoenix_api_key = os.getenv("PHOENIX_API_KEY", None)
             if not phoenix_api_key:
@@ -64,8 +64,7 @@ def eval_fcs():
     )
     client = px.Client()
     all_spans = client.query_spans(query, project_name="genesis-agentic")
-
-    genesis_spans = all_spans[all_spans['name'] == 'GenesisQueryEngine._query']
+    genesis_spans = all_spans[all_spans['name'] == 'GenesisQueryEngine._query'].copy()
     genesis_spans['top_level_parent_id'] = genesis_spans.apply(lambda row: _find_top_level_parent_id(row, all_spans), axis=1)
     genesis_spans['score'] = genesis_spans['output.value'].apply(lambda x: _extract_fcs_value(x))
     
