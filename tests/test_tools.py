@@ -76,7 +76,8 @@ class TestToolsPackage(unittest.TestCase):
             genesis_summarizer="mockingbird-1.0-2024-07-16"
         )
 
-        self.assertContains(agent.chat("What is Genesis?"), "Genesis is an end-to-end platform")
+        self.assertIn("Genesis is an end-to-end platform", agent.chat("What is Genesis?"))
+
 
 if __name__ == "__main__":
     unittest.main()
