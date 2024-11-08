@@ -241,7 +241,7 @@ class GenesisToolFactory:
                 filter=filter_string,
                 citations_style="MARKDOWN" if include_citations else None,
                 citations_url_pattern="{doc.url}" if include_citations else None,
-                x_source_str = "genesis-agentic",
+                x_source_str="genesis-agentic",
             )
             response = genesis_query_engine.query(query)
 
