@@ -387,7 +387,7 @@ class GenesisToolFactory:
             fields.append(f"{name}: {type_name}")
         args_str = ", ".join(fields)
         function_str = f"{tool_name}({args_str}) -> str"
-        
+
         # Create the tool
         tool = GenesisTool.from_defaults(
             fn=rag_function,
