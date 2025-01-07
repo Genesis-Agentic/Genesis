@@ -32,7 +32,7 @@ class TestToolsPackage(unittest.TestCase):
 
         self.assertIsInstance(query_tool, GenesisTool)
         self.assertIsInstance(query_tool, FunctionTool)
-        self.assertEqual(query_tool.tool_type, ToolType.QUERY)
+        self.assertEqual(query_tool.metadata.tool_type, ToolType.QUERY)
 
     def test_tool_factory(self):
         def mult(x, y):
@@ -42,7 +42,7 @@ class TestToolsPackage(unittest.TestCase):
         other_tool = tools_factory.create_tool(mult)
         self.assertIsInstance(other_tool, GenesisTool)
         self.assertIsInstance(other_tool, FunctionTool)
-        self.assertEqual(other_tool.tool_type, ToolType.QUERY)
+        self.assertEqual(other_tool.metadata.tool_type, ToolType.QUERY)
 
     def test_llama_index_tools(self):
         tools_factory = ToolsFactory()
@@ -56,7 +56,7 @@ class TestToolsPackage(unittest.TestCase):
 
         self.assertIsInstance(arxiv_tool, GenesisTool)
         self.assertIsInstance(arxiv_tool, FunctionTool)
-        self.assertEqual(arxiv_tool.tool_type, ToolType.QUERY)
+        self.assertEqual(arxiv_tool.metadata.tool_type, ToolType.QUERY)
 
     def test_public_repo(self):
         genesis_customer_id = "1366999410"
